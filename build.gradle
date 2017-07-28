@@ -1,0 +1,19 @@
+group 'com.sealinetech'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    maven{
+        url 'http://118.89.229.31:15796/nexus/content/groups/public/'
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    compile 'io.netty:netty-all:4.1.9.Final'
+}
