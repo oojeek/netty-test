@@ -16,9 +16,9 @@ public class MyServer {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(parentGroup, childGroup).channel(NioServerSocketChannel.class).childHandler(new MyServerInitializer());
 
-        ChannelFuture channelFuture = bootstrap.bind(8899).sync();
-        channelFuture.channel().closeFuture().sync();
-        parentGroup.shutdownGracefully();
-        childGroup.shutdownGracefully();
+        ChannelFuture channelFuture = bootstrap.bind(8899);
+        //channelFuture.channel().closeFuture().sync();
+        //parentGroup.shutdownGracefully();
+        //childGroup.shutdownGracefully();
     }
 }

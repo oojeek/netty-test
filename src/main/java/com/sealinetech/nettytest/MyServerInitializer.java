@@ -8,9 +8,13 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.CharsetUtil;
 
 import java.nio.ByteOrder;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2017/7/28.
@@ -24,6 +28,7 @@ public class MyServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new LengthFieldPrepender(ByteOrder.LITTLE_ENDIAN, 4, 0, false));
         pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
         pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
+        pipeline.addLast("idleStateHandler", new MyIdleHandler(true,9000, 2000, 30000, TimeUnit.MILLISECONDS));
         pipeline.addLast(new MyServerHandler());
     }
 }
