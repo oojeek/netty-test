@@ -24,7 +24,6 @@ public class MyClientHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         System.out.println(LocalDateTime.now().toString() + "----" + ctx.channel().remoteAddress().toString() + "----" + msg.length());
-        //ctx.writeAndFlush("客户端说：" + LocalDateTime.now());
     }
 
     @Override
@@ -41,15 +40,17 @@ public class MyClientHandler extends SimpleChannelInboundHandler<String> {
     private void sendData(ChannelHandlerContext ctx) {
         if (!ctx.channel().isActive())
         {
+            System.out.println("channel inactive...");
             ctx.close();
             return;
         }
 
         System.out.println("send a pack of data ...");
 
+        long tickCount = System.currentTimeMillis();
         ChannelFuture future = ctx.writeAndFlush(tempString);
         ChannelPromise promise = (ChannelPromise)future;
-        System.out.println(future.isSuccess());
+        //System.out.println(future.isSuccess());
         promise.addListener(new GenericFutureListener<Future<? super Void>>() {
             @Override
             public void operationComplete(Future<? super Void> future) throws Exception {
@@ -58,6 +59,7 @@ public class MyClientHandler extends SimpleChannelInboundHandler<String> {
                 sendData(ctx);
             }
         });
+        System.out.println("Time elapse:" + (System.currentTimeMillis() - tickCount));
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -72,8 +74,9 @@ public class MyClientHandler extends SimpleChannelInboundHandler<String> {
         if (evt == IdleStateEvent.READER_IDLE_STATE_EVENT) {
             System.out.println("READER_IDLE_STATE_EVENT");
         } else if (evt == IdleStateEvent.WRITER_IDLE_STATE_EVENT){
+            // for heartbit
             System.out.println("WRITER_IDLE_STATE_EVENT----" + LocalDateTime.now().toString());
-            //ctx.writeAndFlush(tempString);
+            //ctx.writeAndFlush("ACK");
         } else if (evt == IdleStateEvent.ALL_IDLE_STATE_EVENT) {
             //System.out.println("ALL_IDLE_STATE_EVENT");
         } else if (evt == IdleStateEvent.FIRST_READER_IDLE_STATE_EVENT) {
@@ -83,6 +86,6 @@ public class MyClientHandler extends SimpleChannelInboundHandler<String> {
         } else if (evt == IdleStateEvent.FIRST_ALL_IDLE_STATE_EVENT) {
             //System.out.println("FIRST_ALL_IDLE_STATE_EVENT");
         }
-        super.userEventTriggered(ctx, evt);
+        //super.userEventTriggered(ctx, evt);
     }
 }

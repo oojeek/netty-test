@@ -23,12 +23,12 @@ public class MyServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
+        pipeline.addLast("idleStateHandler", new MyIdleHandler(true,9000, 2000, 30000, TimeUnit.MILLISECONDS));
         pipeline.addLast(new LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN, Integer.MAX_VALUE, 0,
                 4, 0, 4, true));
         pipeline.addLast(new LengthFieldPrepender(ByteOrder.LITTLE_ENDIAN, 4, 0, false));
         pipeline.addLast(new StringEncoder(CharsetUtil.UTF_8));
         pipeline.addLast(new StringDecoder(CharsetUtil.UTF_8));
-        pipeline.addLast("idleStateHandler", new MyIdleHandler(true,9000, 2000, 30000, TimeUnit.MILLISECONDS));
         pipeline.addLast(new MyServerHandler());
     }
 }
